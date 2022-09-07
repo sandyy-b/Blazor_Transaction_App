@@ -1,0 +1,45 @@
+﻿@page "/transactions"
+@inject ITransactionService TransacionService
+
+
+<h2>Transaction App</h2>
+<br />
+<h4>Transaction App</h4>
+
+<div class="col-xl-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-xl-3 col-md-3 col-sm-3 col-xs-12"></div>
+    <div class="col-xl-6 col-md-6 col-sm-6 col-xs-12">
+        @if (trans != null)
+        {
+            <table class="table table-bordered">
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Credit Amount</th>
+                    <th>Debit Amount</th>
+                    <th>Balance</th>
+                </tr>
+                @foreach (var txn in this.trans)
+                {
+                    <tr>
+                        <td>@txn.Date.ToShortDateString()</td>
+                        <td>@txn.Description</td>
+                        <td>@txn.Credit</td>
+                        <td>@txn.Debit</td>
+                        <td>@txn.Balance</td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+    <div class="col-xl-3 col-md-3 col-sm-3 col-xs-12"></div>
+</div>
+
+
+@code {
+    private dynamic trans;
+    protected override async Task OnInitializedAsync()
+    {
+        trans = (await TransacionService.GetAllTransactions()).ToList();
+    }
+}

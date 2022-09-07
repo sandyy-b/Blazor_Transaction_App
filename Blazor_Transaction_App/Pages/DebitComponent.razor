@@ -1,0 +1,47 @@
+﻿@page "/debit"
+@using Blazor_Transaction_App.Models
+
+@inject IDebitService DebitAmount
+@inject IJSRuntime JsRuntime
+<h3>Debit Amount</h3>
+@if (trans != null)
+{
+    <EditForm Model="trans" >
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <InputTextArea id="desc" @bind-Value="trans.Description" class="form-control"></InputTextArea>
+        </div>
+        <div class="form-group">
+            <label for="debit">Debit Amount</label>
+            <InputNumber id="debit" @bind-Value="trans.Debit" class="form-control"></InputNumber>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" @onclick="OnValidSubmit">Withdraw Amount</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private TransactionModel? trans;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        trans = new TransactionModel();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (trans != null && trans.Debit > 0)
+        {
+            string msg = DebitAmount.DebitAmount(this.trans);
+            OnInitialized();
+            await JsRuntime.InvokeVoidAsync("alert", msg);
+        }
+        else{
+            await JsRuntime.InvokeVoidAsync("alert", "Warning! Enter debit amount more than 0");
+        }
+    }
+}
